@@ -9,4 +9,12 @@ function initMap() {
   });
   // The marker, positioned at Uluru
   const marker = new google.maps.Marker({ position: uluru, map: map });
+
+  const infoWindow = new google.maps.InfoWindow({
+    content: '<h1>New marker</h1>'
+  });
+
+  marker.addListener('click', ()=>{
+    infoWindow.open(map,marker);
+  })
 }
