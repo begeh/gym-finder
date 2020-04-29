@@ -14,3 +14,14 @@ a {
   height: 600px;
 }
 
+button {
+  border-radius: 7%;
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  font-size: 1em;
+  margin: 20px;
+  height: 30px;
+  width: 100px;
+}
+
