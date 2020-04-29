@@ -8,7 +8,7 @@ a {
   color: #00B7FF;
 }
 
-section {
+#map {
   border-style: solid;
   width: 90vw;
   height: 600px;
