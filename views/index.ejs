@@ -2,15 +2,32 @@
 <html>
   <head>
     <title><%= title %></title>
+    <script
+  src="https://code.jquery.com/jquery-3.5.0.min.js"
+  integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+  crossorigin="anonymous"></script>
+    <script type='text/javascript' src='/javascripts/initMap.js'></script>
+    <script type='text/javascript' src='/javascripts/config.js'></script>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <div id="map"></div>
-    <button>Find Gyms</button>
-    <script type='text/javascript' src='/javascripts/initMap.js'></script>
-      <script type='text/javascript' src='/javascripts/config.js'></script>
+    <button id="find">Find Gyms</button>
+    <script>
+    $(document).ready(function ()
+  {
+      $('#find').click( ()=> {
+        console.log("Click!")
+      })
+      // const axios = require('axios');
+      // function getAxios(){
+      //   return axios.get("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+toronto+canada&key=AIzaSyB5Gt5W_NoLCy1k3_pbqPiDwjcrobZ5G7Q")
+      //   .then(res => console.log(res.data));
+      // }
+  })
+    </script>
       <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
       </script>
