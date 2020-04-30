@@ -7,7 +7,6 @@
   integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
   crossorigin="anonymous"></script>
     <script type='text/javascript' src='/javascripts/initMap.js'></script>
-    <script type='text/javascript' src='/javascripts/config.js'></script>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
@@ -30,12 +29,20 @@
       // Initialize and add the map
       function initMap() {
         // The location of Uluru
-        const uluru = { lat: 0, lng: 0 };
+        let initialPosition = { lat: 0, lng: 0 };
+
         // The map, centered at Uluru
         const map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 4,
-          center: uluru,
+          zoom: 15,
         });
+
+        if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+         initialPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+         console.log(initialPosition);
+         map.setCenter(initialPosition);
+     });
+      }
 
         // Create the search box and link it to the UI element.
         const input = document.getElementById('pac-input');
@@ -78,13 +85,22 @@
               scaledSize: new google.maps.Size(25, 25)
             };
 
-            // Create a marker for each place.
-            markers.push(new google.maps.Marker({
+            const marker = new google.maps.Marker({
               map: map,
               icon: icon,
               title: place.name,
               position: place.geometry.location
-            }));
+            })
+
+            const infoWindow = new google.maps.InfoWindow({
+            content: `<h1>${marker.title}</h1>`
+          });
+        
+            marker.addListener('click', ()=>{
+            infoWindow.open(map,marker);
+            })
+            // Create a marker for each place.
+            markers.push(marker);
 
             if (place.geometry.viewport) {
               // Only geocodes have viewport.
@@ -98,8 +114,6 @@
 
         //Add markers to map when clicked
         let count = 0;
-        addMarker(uluru);
-        addMarker({lat: 20, lng: 35});
 
         function addMarker(coords) {
           count ++;
@@ -121,6 +135,6 @@
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap"
-         async defer></script>
+      async defer ></script>
   </body>
 </html>
