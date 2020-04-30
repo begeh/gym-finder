@@ -16,22 +16,14 @@
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map"></div>
     <form action= '/' method='get'>
-      <input  type= 'submit' id="find" value='Find Gyms'/>
+      <input  type= 'submit' id="find" value='Reset'/>
     </form>
-    <button onclick="getAxios()">Hello</button>
     <script>
         $(document).ready(function ()
       {
           $('#find').click( ()=> {
             console.log("Click!")
           })
-
-          const axios = require('axios');
-
-  function getAxios(){
-    return axios.get("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+toronto+canada&key=AIzaSyB5Gt5W_NoLCy1k3_pbqPiDwjcrobZ5G7Q")
-    .then(res => console.log(res.data));
-  }
       })
     </script>
     <script>
@@ -50,6 +42,61 @@
         const searchBox = new google.maps.places.SearchBox(input);
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function() {
+          searchBox.setBounds(map.getBounds());
+        });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+          var places = searchBox.getPlaces();
+
+          if (places.length == 0) {
+            return;
+          }
+
+          // Clear out the old markers.
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+          markers = [];
+
+          // For each place, get the icon, name and location.
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            if (!place.geometry) {
+              console.log("Returned place contains no geometry");
+              return;
+            }
+            var icon = {
+              url: place.icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25)
+            };
+
+            // Create a marker for each place.
+            markers.push(new google.maps.Marker({
+              map: map,
+              icon: icon,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+            if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+        });
+
+        //Add markers to map when clicked
         let count = 0;
         addMarker(uluru);
         addMarker({lat: 20, lng: 35});
@@ -73,9 +120,7 @@
         })
       }
     </script>
-      <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
-      </script>
-      <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places&callback=initMap"
+         async defer></script>
   </body>
 </html>
