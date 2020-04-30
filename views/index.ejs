@@ -26,6 +26,12 @@
       })
     </script>
     <script>
+
+      const prices= {
+        "GoodLife": "<p>Monthly Fee (One Club Access) (Monthly): $59.99</p><p>Monthly Fee (All Club Access) (Monthly): $69.99</p>",
+        "Fit4Less": "$10/month"
+      }
+
       // Initialize and add the map
       function initMap() {
         // The location of Uluru
@@ -92,9 +98,18 @@
               address: place.formatted_address
             })
 
+            let content = `<h3>${marker.title}</h3>
+                      <h4>${marker.address}</h4>
+                      `;
+
+            for(key in prices){
+              if(marker.title.split(" ").includes(key)){
+                content += prices[key];
+              }
+            }
+
             const infoWindow = new google.maps.InfoWindow({
-            content: `<h3>${marker.title}</h3>
-                      <p>${marker.address}</p>`
+            content: content
           });
         
             marker.addListener('click', ()=>{
