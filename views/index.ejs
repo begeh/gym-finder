@@ -20,9 +20,9 @@
     <script>
         $(document).ready(function ()
       {
-          $('#find').click( ()=> {
-            console.log("Click!")
-          })
+          // $('#find').click( ()=> {
+          //   console.log("Click!")
+          // })
       })
     </script>
     <script>
@@ -79,7 +79,6 @@
             }
             var icon = {
               url: place.icon,
-              size: new google.maps.Size(71, 71),
               origin: new google.maps.Point(0, 0),
               anchor: new google.maps.Point(17, 34),
               scaledSize: new google.maps.Size(25, 25)
@@ -89,11 +88,13 @@
               map: map,
               icon: icon,
               title: place.name,
-              position: place.geometry.location
+              position: place.geometry.location,
+              address: place.formatted_address
             })
 
             const infoWindow = new google.maps.InfoWindow({
-            content: `<h1>${marker.title}</h1>`
+            content: `<h3>${marker.title}</h3>
+                      <p>${marker.address}</p>`
           });
         
             marker.addListener('click', ()=>{
