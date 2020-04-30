@@ -13,23 +13,69 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map"></div>
-    <button id="find">Find Gyms</button>
+    <form action= '/' method='get'>
+      <input  type= 'submit' id="find" value='Find Gyms'/>
+    </form>
+    <button onclick="getAxios()">Hello</button>
     <script>
-    $(document).ready(function ()
-  {
-      $('#find').click( ()=> {
-        console.log("Click!")
+        $(document).ready(function ()
+      {
+          $('#find').click( ()=> {
+            console.log("Click!")
+          })
+
+          const axios = require('axios');
+
+  function getAxios(){
+    return axios.get("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+toronto+canada&key=AIzaSyB5Gt5W_NoLCy1k3_pbqPiDwjcrobZ5G7Q")
+    .then(res => console.log(res.data));
+  }
       })
-      // const axios = require('axios');
-      // function getAxios(){
-      //   return axios.get("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+toronto+canada&key=AIzaSyB5Gt5W_NoLCy1k3_pbqPiDwjcrobZ5G7Q")
-      //   .then(res => console.log(res.data));
-      // }
-  })
+    </script>
+    <script>
+      // Initialize and add the map
+      function initMap() {
+        // The location of Uluru
+        const uluru = { lat: 0, lng: 0 };
+        // The map, centered at Uluru
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 4,
+          center: uluru,
+        });
+
+        // Create the search box and link it to the UI element.
+        const input = document.getElementById('pac-input');
+        const searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        let count = 0;
+        addMarker(uluru);
+        addMarker({lat: 20, lng: 35});
+
+        function addMarker(coords) {
+          count ++;
+          const marker = new google.maps.Marker({ position: coords, map: map });
+          const infoWindow = new google.maps.InfoWindow({
+            content: `<h1>${count}</h1>`
+          });
+        
+          marker.addListener('click', ()=>{
+            infoWindow.open(map,marker);
+          })
+        }
+
+        //Listen for click on map
+        google.maps.event.addListener(map, 'click', 
+        function(event){
+          addMarker(event.latLng);
+        })
+      }
     </script>
       <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&callback=initMap">
       </script>
+      <script src="https://maps.googleapis.com/maps/api/js?key=<%= key %>&libraries=places"></script>
   </body>
 </html>
