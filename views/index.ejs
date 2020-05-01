@@ -14,6 +14,7 @@
     <p>Welcome to <%= title %></p>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map"></div>
+    <div id="price-box"></div>
     <form action= '/' method='get'>
       <input  type= 'submit' id="find" value='Reset'/>
     </form>
@@ -28,24 +29,22 @@
     <script>
 
       const prices= {
-        "GoodLife": "<p>Monthly Fee (One Club Access) (Monthly): $59.99</p><p>Monthly Fee (All Club Access) (Monthly): $69.99</p>",
+        "GoodLife": "<p>Monthly Fee (One Club Access): $59.99</p><p>Monthly Fee (All Club Access): $69.99</p><p>Yearly Fee (One Club Access): $719.99</p><p>Yearly Fee (All Club Access): $839.99</p>",
         "Fit4Less": "$10/month"
       }
 
       // Initialize and add the map
       function initMap() {
-        // The location of Uluru
         let initialPosition = { lat: 0, lng: 0 };
 
-        // The map, centered at Uluru
         const map = new google.maps.Map(document.getElementById("map"), {
           zoom: 15,
         });
 
+        //If Geolocation authorized, sets center of map on current location
         if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
          initialPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-         console.log(initialPosition);
          map.setCenter(initialPosition);
      });
       }
@@ -113,7 +112,10 @@
           });
         
             marker.addListener('click', ()=>{
+            $("#price-box").empty();
+            $("#price-box").append(content);
             infoWindow.open(map,marker);
+            
             })
             // Create a marker for each place.
             markers.push(marker);
